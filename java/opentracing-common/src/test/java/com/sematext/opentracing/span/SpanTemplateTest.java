@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class SpanTemplateTest {
 
-    private TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);;
+    private TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);
 
     private SpanOperations spanOps = new SpanTemplate();
     private static boolean setup = false;
