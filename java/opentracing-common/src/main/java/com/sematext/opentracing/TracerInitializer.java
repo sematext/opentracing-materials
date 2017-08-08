@@ -36,9 +36,9 @@ public class TracerInitializer {
      *                  generated the span
      */
     public void setup(String host, int port, String component) {
-        String endpoint = format("http://%s:%d/api/v1/spans", host, port);
         switch(tracerType) {
             case ZIPKIN: {
+                String endpoint = format("http://%s:%d/api/v1/spans", host, port);
                 Sender sender = OkHttpSender.create(endpoint);
                 Reporter<Span> reporter = AsyncReporter.builder(sender)
                                             .build();
