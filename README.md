@@ -65,5 +65,9 @@ The info about apps is persisted in an embedded **H2** database. Use the followi
 $ curl -v -XPOST http://localhost:8080/app/slack
 $ curl -v -XGET http://localhost:8080/app
 ```
+## opentracing-{injector,extractor}
 
+Demonstrates context propagation capabilities across JVM process boundaries. `opentracing-injector` encodes and injects the span context into HTTP headers (it actually injects `trace` and `span` identifiers). Then, it makes an HTTP request to `opentracing-extractor` which decodes the headers and constructs a propagated span context. The parent span context is used to start a new span inside the trace.
+
+![ctx propagation](https://github.com/sematext/opentracing-materials/blob/master/inject-extract.png)
 
