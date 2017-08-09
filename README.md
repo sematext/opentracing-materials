@@ -4,7 +4,7 @@
 
 # Getting started
 
-Because OpenTracing is just an API, you need to deploy a distributed tracer that is able to ingest / store the spans.
+Because OpenTracing is just an API/standard, you need to deploy a distributed tracer that is able to ingest/store the spans.
 
 The easiest way to bootstrap a tracer is via Docker. For example, to run the [Zipkin](http://zipkin.io/) server inside container:
 
@@ -63,7 +63,7 @@ The info about apps is persisted in an embedded **H2** database. Use the followi
 
 ```bash
 $ curl -v -XPOST http://localhost:8080/app/slack
-$ curl -v -XGET https://localhost:8080/app
+$ curl -v -XGET http://localhost:8080/app
 ```
 
 
