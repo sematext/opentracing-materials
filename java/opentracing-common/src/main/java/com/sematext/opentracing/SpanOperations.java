@@ -11,11 +11,12 @@ package com.sematext.opentracing;
 import com.sematext.opentracing.span.SpanCallback;
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
-import io.opentracing.Tracer;
+import io.opentracing.SpanContext;
+import org.springframework.http.HttpHeaders;
+
+import java.util.Map;
 
 public interface SpanOperations {
-
-    Tracer tracer();
 
     void doInTracer(SpanCallback callback);
 
@@ -24,4 +25,10 @@ public interface SpanOperations {
     ActiveSpan startActive(String name);
 
     ActiveSpan startActive(String name, ActiveSpan parent);
+
+    ActiveSpan startActive(String name, SpanContext parent);
+
+    void inject(SpanContext ctx, HttpHeaders headers);
+
+    SpanContext extract(final Map<String, Object> map);
 }
