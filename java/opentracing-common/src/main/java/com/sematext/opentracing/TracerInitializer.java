@@ -10,6 +10,7 @@ package com.sematext.opentracing;
 
 import brave.Tracing;
 import brave.opentracing.BraveTracer;
+import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
 import zipkin.Span;
 import zipkin.reporter.AsyncReporter;
@@ -22,6 +23,7 @@ import static java.lang.String.format;
 public class TracerInitializer {
 
     private Tracers tracerType;
+    private Tracer tracer;
 
     public TracerInitializer(Tracers tracerType) {
         this.tracerType = tracerType;
@@ -44,15 +46,20 @@ public class TracerInitializer {
                                             .build();
                 // `Brave` is the bridge between Zipkin and OpenTracing API.
                 // `BraveTracer.create` returns an OpenTracing compatible tracer impl
-                GlobalTracer.register(BraveTracer.create(Tracing.newBuilder()
-                                            .localServiceName(component)
-                                            .reporter(reporter)
-                                            .build()));
+                tracer = BraveTracer.create(Tracing.newBuilder()
+                                        .localServiceName(component)
+                                        .reporter(reporter)
+                                        .build());
+                GlobalTracer.register(tracer);
                 break;
             }
             case JEAGER: {
                 throw new UnsupportedOperationException("Jeager tracer is not supported yet");
             }
         }
+    }
+
+    public Tracer getTracer() {
+        return this.tracer;
     }
 }
