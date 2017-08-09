@@ -6,6 +6,10 @@ import com.sematext.opentracing.Tracers;
 import io.opentracing.ActiveSpan;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SpanTemplateTest {
 
@@ -43,5 +47,15 @@ public class SpanTemplateTest {
             }
         }
         Thread.sleep(2000);
+    }
+
+    @Test
+    public void testInject() {
+        try (ActiveSpan span = spanOps.startActive("parent")) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("app", "console");
+            HttpHeaders headers = new HttpHeaders();
+            spanOps.inject(span.context(), headers);
+        }
     }
 }
