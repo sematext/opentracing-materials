@@ -44,7 +44,7 @@ tracerInitializer.setup("localhost", 9411, "component-name");
 Use `SpanTemplate` to start a span:
 
 ```java
-SpanOperations spanOps = SpanTemplate();
+SpanOperations spanOps = new SpanTemplate();
 
 try (ActiveSpan span = spanOps.startActive("create-app")) {
     span.setTag("db.instance", "apps");
