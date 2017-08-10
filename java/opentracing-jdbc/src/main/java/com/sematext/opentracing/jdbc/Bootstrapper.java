@@ -13,6 +13,7 @@ import com.sematext.opentracing.TracerInitializer;
 import com.sematext.opentracing.Tracers;
 import com.sematext.opentracing.span.SpanTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,8 +26,12 @@ public class Bootstrapper implements CommandLineRunner {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public static void main(String[] args) {
+	@Value("${zipkin.host}")
+	private String zipkinHost;
+	@Value("${zipkin.port}")
+	private int zipkinPort;
 
+	public static void main(String[] args) {
 		SpringApplication.run(Bootstrapper.class, args);
 	}
 
@@ -36,7 +41,7 @@ public class Bootstrapper implements CommandLineRunner {
 		jdbcTemplate.execute("CREATE TABLE apps(name VARCHAR(255))");
 
 		TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);
-		tracerInitializer.setup("localhost", 9411, "opentracing-jdbc");
+		tracerInitializer.setup(zipkinHost, zipkinPort, "opentracing-jdbc");
 	}
 
 	@Bean
