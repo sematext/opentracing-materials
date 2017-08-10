@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Accepts {@link HttpHeaders} as a constructor arg and populate the HTTP headers with data required for the
+ * Accepts {@link HttpHeaders} as constructor arg and populates the HTTP headers with data required for the
  * context propagation, such as trace identifier or span identifier.
  */
 public class HttpHeadersInjectAdapter implements TextMap {
