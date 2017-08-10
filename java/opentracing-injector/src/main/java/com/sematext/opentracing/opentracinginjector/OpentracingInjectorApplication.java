@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class OpentracingInjectorApplication implements CommandLineRunner {
 
-	public static void main(String[] args) {
-		SpringApplication.run(OpentracingInjectorApplication.class, args);
-	}
-
 	@Value("${zipkin.host}")
 	private String zipkinHost;
 	@Value("${zipkin.port}")
 	private int zipkinPort;
+
+	public static void main(String[] args) {
+		SpringApplication.run(OpentracingInjectorApplication.class, args);
+	}
 
 	@Override
 	public void run(String... strings) throws Exception {
