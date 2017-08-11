@@ -15,5 +15,5 @@ public enum Tracers {
 
     ZIPKIN,
 
-    JEAGER
+    JAEGER
 }

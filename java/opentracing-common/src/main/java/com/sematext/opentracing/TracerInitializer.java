@@ -53,8 +53,8 @@ public class TracerInitializer {
                 GlobalTracer.register(tracer);
                 break;
             }
-            case JEAGER: {
-                throw new UnsupportedOperationException("Jeager tracer is not supported yet");
+            case JAEGER: {
+                throw new UnsupportedOperationException("Jaeger tracer is not supported yet");
             }
         }
     }
