@@ -10,6 +10,7 @@ package com.sematext.opentracing;
 
 import brave.Tracing;
 import brave.opentracing.BraveTracer;
+import com.uber.jaeger.Configuration;
 import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
 import zipkin.Span;
@@ -46,15 +47,27 @@ public class TracerInitializer {
                                             .build();
                 // `Brave` is the bridge between Zipkin and OpenTracing API.
                 // `BraveTracer.create` returns an OpenTracing compatible tracer impl
-                tracer = BraveTracer.create(Tracing.newBuilder()
-                                        .localServiceName(component)
-                                        .reporter(reporter)
-                                        .build());
+                this.tracer = BraveTracer.create(Tracing.newBuilder()
+                                          .localServiceName(component)
+                                          .reporter(reporter)
+                                          .build());
                 GlobalTracer.register(tracer);
                 break;
             }
             case JAEGER: {
-                throw new UnsupportedOperationException("Jaeger tracer is not supported yet");
+                Configuration config = new Configuration(component,
+                        new Configuration.SamplerConfiguration("const", 1),
+                        new Configuration.ReporterConfiguration(
+                                true,
+                                host,
+                                port,
+                                1000,
+                                10000)
+
+                );
+                this.tracer = config.getTracer();
+                GlobalTracer.register(tracer);
+                break;
             }
         }
     }

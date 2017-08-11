@@ -42,6 +42,14 @@
       <version>0.21.0</version>
     </dependency>
 
+    <!-- Jaeger -->
+    <dependency>
+      <groupId>com.uber.jaeger</groupId>
+      <artifactId>jaeger-core</artifactId>
+      <version>0.20.6</version>
+    </dependency>
+
+
     <!-- Spring -->
     <dependency>
       <groupId>org.springframework</groupId>
