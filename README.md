@@ -40,8 +40,12 @@ Tracer's initialization is done via `TracerInitializer` implementation. See the 
 ```java
 TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);
 tracerInitializer.setup("localhost", 9411, "component-name");
+```
+Use `SpanTemplate` to start a span:
 
-SpanOperations spanOps = SpanTemplate();
+```java
+SpanOperations spanOps = new SpanTemplate();
+
 try (ActiveSpan span = spanOps.startActive("create-app")) {
     span.setTag("db.instance", "apps");
     span.setTag("db.type", "sql");
