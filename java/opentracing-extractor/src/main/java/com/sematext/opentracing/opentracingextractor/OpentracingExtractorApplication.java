@@ -13,10 +13,12 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class OpentracingExtractorApplication implements CommandLineRunner {
 
-	@Value("${zipkin.host}")
-	private String zipkinHost;
-	@Value("${zipkin.port}")
-	private int zipkinPort;
+	@Value("${tracer.host}")
+	private String tracerHost;
+	@Value("${tracer.port}")
+	private int tracerPort;
+	@Value("${tracer.type}")
+	private Tracers tracerType;
 
 	public static void main(String[] args) {
 		SpringApplication.run(OpentracingExtractorApplication.class, args);
@@ -24,8 +26,8 @@ public class OpentracingExtractorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) throws Exception {
-		TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);
-		tracerInitializer.setup(zipkinHost, zipkinPort, "opentracing-extractor");
+		TracerInitializer tracerInitializer = new TracerInitializer(tracerType);
+		tracerInitializer.setup(tracerHost, tracerPort, "opentracing-extractor");
 	}
 
 	@Bean
