@@ -26,10 +26,12 @@ public class Bootstrapper implements CommandLineRunner {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Value("${zipkin.host}")
-	private String zipkinHost;
-	@Value("${zipkin.port}")
-	private int zipkinPort;
+	@Value("${tracer.host}")
+	private String tracerHost;
+	@Value("${tracer.port}")
+	private int tracerPort;
+	@Value("${tracer.type}")
+	private Tracers tracerType;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Bootstrapper.class, args);
@@ -40,8 +42,8 @@ public class Bootstrapper implements CommandLineRunner {
 		jdbcTemplate.execute("DROP TABLE apps IF EXISTS");
 		jdbcTemplate.execute("CREATE TABLE apps(name VARCHAR(255))");
 
-		TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);
-		tracerInitializer.setup(zipkinHost, zipkinPort, "opentracing-jdbc");
+		TracerInitializer tracerInitializer = new TracerInitializer(tracerType);
+		tracerInitializer.setup(tracerHost, tracerPort, "opentracing-jdbc");
 	}
 
 	@Bean
