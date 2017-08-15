@@ -1,0 +1,75 @@
+version: "3"
+services:
+
+  elastic:
+      image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
+      ports:
+        - 9200:9200
+        - 9300:9300
+      environment:
+        - http.host=0.0.0.0
+        - transport.host=127.0.0.1
+      volumes:
+        - data:/usr/share/elasticsearch/data
+
+  collector:
+    build:
+      context: ./collector
+    ports:
+      - 14267:14267
+      - 14268:14268
+    depends_on:
+      - elastic
+    entrypoint:
+      - dockerize
+      - -wait
+      - tcp://elastic:9200
+      - -timeout
+      - 60s
+      - /go/bin/collector-linux
+      - --span-storage.type=elasticsearch
+      - --es.server-urls=http://elastic:9200
+      - --es.username=${ES_USERNAME}
+      - --es.password=${ES_PASSWORD}
+
+  agent:
+    build:
+      context: ./agent
+    ports:
+      - 5775:5775
+      - 6831:6831
+      - 6832:6832
+      - 5778:5778
+    depends_on:
+      - collector
+    entrypoint:
+      - dockerize
+      - -wait
+      - tcp://collector:14267
+      - -timeout
+      - 120s
+      - /go/bin/agent-linux
+      - --collector.host-port=collector:14267
+  query:
+    build:
+      context: ./query
+    depends_on:
+      - elastic
+    ports:
+      - 16686:16686
+    entrypoint:
+      - dockerize
+      - -wait
+      - tcp://elastic:9200
+      - -timeout
+      - 60s
+      - /go/bin/query-linux
+      - --span-storage.type=elasticsearch
+      - --es.server-urls=http://elastic:9200
+      - --es.username=${ES_USERNAME}
+      - --es.password=${ES_PASSWORD}
+      - --query.static-files=/go/jaeger-ui
+
+volumes:
+  data:
+    driver: local
