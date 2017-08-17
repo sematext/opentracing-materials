@@ -1,2 +1,4 @@
 jaeger-client == 3.5.0
 opentracing == 1.2.2
+flask = 0.12.2
+Flask-Opentracing == 0.1.7
