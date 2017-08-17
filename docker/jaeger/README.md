@@ -14,7 +14,7 @@ $ go get -v github.com/uber/jaeger
 
 ## Install dependencies
 
-You are now ready to install the required dependenices via `glide` package manager:
+You are now ready to install the required dependencies via `glide` package manager:
 
 ```bash
 $ cd $JAEGER_HOME/src/github.com/uber/jaeger
@@ -45,7 +45,7 @@ Copy the generated Jaeger's binaries to their corresponding directories of this 
 $ cp $JAEGER_HOME/src/github.com/uber/jaeger/cmd/agent/agent-linux docker/jaeger/agent/
 $ cp $JAEGER_HOME/src/github.com/uber/jaeger/cmd/collector/collector-linux docker/jaeger/collector/
 $ cp $JAEGER_HOME/src/github.com/uber/jaeger/cmd/query/query-linux docker/jaeger/query/
-$ cp -r $JAEGER_HOME/src/github.com/uber/jaeger/jaeger-ui-build/build docker/jaeger/query/jaeger-ui
+$ cp -r $JAEGER_HOME/src/github.com/uber/jaeger/jaeger-ui-build/build docker/jaeger/query/jaeger-ui-build
 
 ```
 
