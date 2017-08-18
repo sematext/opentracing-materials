@@ -13,6 +13,8 @@ import brave.opentracing.BraveTracer;
 import com.uber.jaeger.Configuration;
 import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import zipkin.Span;
 import zipkin.reporter.AsyncReporter;
 import zipkin.reporter.Reporter;
@@ -25,6 +27,10 @@ public class TracerInitializer {
 
     private Tracers tracerType;
     private Tracer tracer;
+
+    private static boolean initialized = false;
+
+    private static final Logger logger = LogManager.getLogger(TracerInitializer.class);
 
     public TracerInitializer(Tracers tracerType) {
         this.tracerType = tracerType;
@@ -39,6 +45,10 @@ public class TracerInitializer {
      *                  generated the span
      */
     public void setup(String host, int port, String component) {
+        if (initialized) {
+            logger.debug("{} tracer already initialized", tracerType);
+            return;
+        }
         switch(tracerType) {
             case ZIPKIN: {
                 String endpoint = format("http://%s:%d/api/v1/spans", host, port);
@@ -52,6 +62,7 @@ public class TracerInitializer {
                                           .reporter(reporter)
                                           .build());
                 GlobalTracer.register(tracer);
+                initialized = true;
                 break;
             }
             case JAEGER: {
@@ -67,12 +78,20 @@ public class TracerInitializer {
                 );
                 this.tracer = config.getTracer();
                 GlobalTracer.register(tracer);
+                initialized = true;
                 break;
             }
         }
+        logger.info("Initialized {} tracer with component " +
+                     "name {} pointing to {}:{}",
+                     tracerType, component,
+                     host, port);
     }
 
     public Tracer getTracer() {
+        if (!GlobalTracer.isRegistered()) {
+            throw new TracerNotRegisteredException("Tracer must be registered");
+        }
         return this.tracer;
     }
 }
