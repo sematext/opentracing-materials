@@ -13,19 +13,14 @@ import java.util.Map;
 
 public class SpanTemplateTest {
 
-    private TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);
+    private static TracerInitializer tracerInitializer = new TracerInitializer(Tracers.ZIPKIN);
 
-    private SpanOperations spanOps = new SpanTemplate();
-    private static boolean setup = false;
+    private SpanOperations spanOps;
 
     @Before
     public void setUp() {
-        // JUnit 5 (@BeforeAll) would deal with this
-        if (setup) {
-            return;
-        }
         tracerInitializer.setup("localhost", 9411, "console-app");
-        setup = true;
+        spanOps = new SpanTemplate(tracerInitializer.getTracer());
     }
 
     @Test
