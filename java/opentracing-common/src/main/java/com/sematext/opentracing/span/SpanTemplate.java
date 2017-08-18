@@ -9,7 +9,6 @@
 package com.sematext.opentracing.span;
 
 import com.sematext.opentracing.SpanOperations;
-import com.sematext.opentracing.TracerNotRegisteredException;
 import com.sematext.opentracing.carrier.HttpHeadersExtractAdapter;
 import com.sematext.opentracing.carrier.HttpHeadersInjectAdapter;
 import io.opentracing.ActiveSpan;
@@ -17,24 +16,16 @@ import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
-import io.opentracing.util.GlobalTracer;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Map;
 
 public class SpanTemplate implements SpanOperations {
 
-    /**
-     * Returns the current Tracer.
-     *
-     * @return returns the reference to {@link GlobalTracer} or an instance
-     * of a class which implements the {@link Tracer} interface.
-     */
-    private Tracer tracer() {
-        if (!GlobalTracer.isRegistered()) {
-            throw new TracerNotRegisteredException("Tracer must be registered");
-        }
-        return GlobalTracer.get();
+    private Tracer tracer;
+
+    public SpanTemplate(Tracer tracer) {
+        this.tracer = tracer;
     }
 
     /**
@@ -44,7 +35,7 @@ public class SpanTemplate implements SpanOperations {
      */
     @Override
     public void doInTracer(SpanCallback callback) {
-        callback.doInTracer(tracer());
+        callback.doInTracer(tracer);
     }
 
     /**
@@ -55,7 +46,7 @@ public class SpanTemplate implements SpanOperations {
      */
     @Override
     public Span start(String name) {
-        return tracer().buildSpan(name).startManual();
+        return tracer.buildSpan(name).startManual();
     }
 
     /**
@@ -66,7 +57,7 @@ public class SpanTemplate implements SpanOperations {
      */
     @Override
     public ActiveSpan startActive(String name) {
-        return tracer().buildSpan(name)
+        return tracer.buildSpan(name)
                         .startActive();
     }
 
@@ -80,7 +71,7 @@ public class SpanTemplate implements SpanOperations {
      */
     @Override
     public ActiveSpan startActive(String name, ActiveSpan parent) {
-        return tracer().buildSpan(name)
+        return tracer.buildSpan(name)
                         .asChildOf(parent)
                         .startActive();
     }
@@ -95,7 +86,7 @@ public class SpanTemplate implements SpanOperations {
      */
     @Override
     public ActiveSpan startActive(String name, SpanContext parent) {
-        return tracer().buildSpan(name)
+        return tracer.buildSpan(name)
                         .asChildOf(parent)
                         .startActive();
     }
@@ -110,7 +101,7 @@ public class SpanTemplate implements SpanOperations {
     @Override
     public void inject(SpanContext ctx, HttpHeaders headers) {
         HttpHeadersInjectAdapter injectAdapter = new HttpHeadersInjectAdapter(headers);
-        tracer().inject(ctx, Format.Builtin.HTTP_HEADERS, injectAdapter);
+        tracer.inject(ctx, Format.Builtin.HTTP_HEADERS, injectAdapter);
     }
 
     /**
@@ -122,6 +113,6 @@ public class SpanTemplate implements SpanOperations {
     @Override
     public SpanContext extract(Map<String, Object> map) {
         HttpHeadersExtractAdapter extractAdapter = new HttpHeadersExtractAdapter(map);
-        return tracer().extract(Format.Builtin.HTTP_HEADERS, extractAdapter);
+        return tracer.extract(Format.Builtin.HTTP_HEADERS, extractAdapter);
     }
 }
