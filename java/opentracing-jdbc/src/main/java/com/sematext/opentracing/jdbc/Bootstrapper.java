@@ -41,13 +41,17 @@ public class Bootstrapper implements CommandLineRunner {
 	public void run(String... strings) throws Exception {
 		jdbcTemplate.execute("DROP TABLE apps IF EXISTS");
 		jdbcTemplate.execute("CREATE TABLE apps(name VARCHAR(255))");
-
-		TracerInitializer tracerInitializer = new TracerInitializer(tracerType);
-		tracerInitializer.setup(tracerHost, tracerPort, "opentracing-jdbc");
 	}
 
 	@Bean
-	public SpanOperations spanOps() {
-		return new SpanTemplate();
+	public TracerInitializer tracerInitializer() {
+		TracerInitializer tracerInitializer = new TracerInitializer(tracerType);
+		tracerInitializer.setup(tracerHost, tracerPort, "opentracing-jdbc");
+		return tracerInitializer;
+	}
+
+	@Bean
+	public SpanOperations spanOps(TracerInitializer tracerInitializer) {
+		return new SpanTemplate(tracerInitializer.getTracer());
 	}
 }

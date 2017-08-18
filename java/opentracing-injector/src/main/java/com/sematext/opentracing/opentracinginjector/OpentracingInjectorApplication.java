@@ -5,13 +5,12 @@ import com.sematext.opentracing.TracerInitializer;
 import com.sematext.opentracing.Tracers;
 import com.sematext.opentracing.span.SpanTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class OpentracingInjectorApplication implements CommandLineRunner {
+public class OpentracingInjectorApplication {
 
 	@Value("${tracer.host}")
 	private String tracerHost;
@@ -24,14 +23,15 @@ public class OpentracingInjectorApplication implements CommandLineRunner {
 		SpringApplication.run(OpentracingInjectorApplication.class, args);
 	}
 
-	@Override
-	public void run(String... strings) throws Exception {
+	@Bean
+	public TracerInitializer tracerInitializer() {
 		TracerInitializer tracerInitializer = new TracerInitializer(tracerType);
 		tracerInitializer.setup(tracerHost, tracerPort, "opentracing-injector");
+		return tracerInitializer;
 	}
 
 	@Bean
-	public SpanOperations spanOps() {
-		return new SpanTemplate();
+	public SpanOperations spanOps(TracerInitializer tracerInitializer) {
+		return new SpanTemplate(tracerInitializer.getTracer());
 	}
 }
