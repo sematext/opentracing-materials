@@ -9,6 +9,9 @@
 from argparse import ArgumentParser
 
 import sys
+
+import opentracing
+import os
 from logbook import Logger, StreamHandler
 
 from flask import Flask
@@ -39,11 +42,6 @@ parser = ArgumentParser(prog="OpenTracing demonstration for Flask web framework"
 parser.add_argument("--trace-all", help="determines if all requests are traced", action="store_true")
 args = parser.parse_args()
 
-# initialize `flask` tracer with an instance of
-# `jaeger` tracer. With this configuration all requests
-# will be traced. Open your browser and go to http://localhost:5000/api/octi.
-# Hit F5 several times and see how spans for the `octi` endpoint are
-# reported to `Jaeger`.
 if args.trace_all:
     flask_tracer = FlaskTracer(initializer.tracer, True, app)
 
@@ -55,10 +53,15 @@ else:
     tracer = FlaskTracer(initializer.tracer)
 
     @app.route("/api/octi")
-    @tracer.trace("url")
+    # the input param for this annotation can be any valid
+    # property of the `werkzeug/wrappers.py/BaseRequest` class
+    @tracer.trace("url", "path", "host")
     def octi_endpoint_traced():
         # get the current span and attach some tags
         span = tracer.get_span()
+        # start child span
+        with opentracing.tracer.start_span('api/octi-inner', span) as child_span:
+            child_span.set_tag("pid", os.getpid())
         span.set_tag("http.method", "GET")
         return "octi traced"
 
