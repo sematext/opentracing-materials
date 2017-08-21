@@ -75,3 +75,44 @@ Demonstrates context propagation capabilities across JVM process boundaries. `op
 
 ![ctx propagation](https://github.com/sematext/opentracing-materials/blob/master/inject-extract.png)
 
+# Python
+
+Install the needed dependencies:
+
+```bash
+$ pip install -r requierements.txt
+```
+
+**NOTE:** Jaeger Python client is not compatible with Python **3** (although there is work in progress to fix that). You'll need to run `pip install` against Python **2.7**. If you want to avoid altering your current Python env, please consider using [virtualenv](https://virtualenv.pypa.io/en/stable/).
+
+## initializer.py
+
+Module that encapsulates common tasks related to tracer initialization/registration. Tracer initialization is done via `TracerInitializer` class:
+
+```python
+initializer = TracerInitializer('jaeger')
+initializer.setup('localhost', 5775, 'opentracing-python')
+```
+
+## basic.py
+
+A trivial example of using OpenTracing API. Starts a single span, attaches some tags to it and sends it to the tracer.
+
+## flask_tracing.py
+
+This module bootstraps a simple Flask app. You can start it with:
+
+```bash
+$ python2.7 flask_tracing.py
+[2017-08-21 14:43:26.038214] INFO: flask-opentracing: jaeger tracer initialized on endpoint localhost:5775
+[2017-08-21 14:43:26.042258] INFO: flask-opentracing: Tracing single endpoint. Browse to http://localhost:5000/api/octi
+```
+
+This will instrument the endpoints that are annotated with `@tracer.trace`. If you want to instrument all avaialable endpoints pass the `--trace-all` flag:
+
+```bash
+$ python2.7 flask_tracing.py --trace-all
+[2017-08-21 14:46:28.128563] INFO: flask-opentracing: jaeger tracer initialized on endpoint localhost:5775
+[2017-08-21 14:46:28.132731] INFO: flask-opentracing: Tracing all endpoints. Browse to http://localhost:5000/api/octi
+```
+
