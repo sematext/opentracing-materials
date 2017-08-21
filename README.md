@@ -108,7 +108,7 @@ $ python2.7 flask_tracing.py
 [2017-08-21 14:43:26.042258] INFO: flask-opentracing: Tracing single endpoint. Browse to http://localhost:5000/api/octi
 ```
 
-This will instrument the endpoints that are annotated with `@tracer.trace`. If you want to instrument all avaialable endpoints pass the `--trace-all` flag:
+This will instrument the endpoints that are annotated with `@tracer.trace`. If you want to instrument all available endpoints, pass the `--trace-all` flag:
 
 ```bash
 $ python2.7 flask_tracing.py --trace-all
