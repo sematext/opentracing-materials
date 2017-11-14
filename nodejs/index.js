@@ -11,7 +11,7 @@ const UDPSender = require('jaeger-client/dist/src/reporters/udp_sender').default
 const serviceName = "octi";
 const options = {
     tags: {
-      'api-token': 'c15a1793-71b7-46a5-88c5-bc76f9c772a0'
+      'api-token': '<your-token>'
     }
 };
 
