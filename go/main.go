@@ -20,7 +20,7 @@ func main() {
 	tracer, closer := jaeger.NewTracer("octi",
 		sampler,
 		reporter,
-		jaeger.TracerOptions.Tag("api-token", "c15a1793-71b7-46a5-88c5-bc76f9c772a0"),
+		jaeger.TracerOptions.Tag("api-token", "<your-token>"),
 	)
 
 	span := tracer.StartSpan("octi-request")
